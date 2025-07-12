@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Obat extends Model
 {
     use HasFactory;
-    protected $fillable = ['nama_obat', 'kategori', 'stok', 'kadaluarsa', 'unit', 'deskripsi'];
+    protected $fillable = ['nama_obat', 'kategori', 'stok', 'tanggal_kadaluarsa', 'unit', 'deskripsi'];
     
     public function rekam_medis()
     {

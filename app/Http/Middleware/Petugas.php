@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class Petugas
 {
@@ -16,10 +18,11 @@ class Petugas
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'petugas') {
+        if (Auth::check() && (Auth::user()->role === 'petugas' || Auth::user()->role === 'admin')) {
             return $next($request);
-        }
+        } else {
 
         return abort(403, 'Akses hanya untuk Petugas.');
+        }
     }
 }
