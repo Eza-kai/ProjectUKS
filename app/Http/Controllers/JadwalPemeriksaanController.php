@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JadwalPemeriksaan;
 use App\Models\Kelas;
 use App\Models\Petugas;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 
 class JadwalPemeriksaanController extends Controller
@@ -24,6 +25,11 @@ class JadwalPemeriksaanController extends Controller
 
     public function store(Request $request)
     {
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menambah',
+    'keterangan' => 'Menambah jadwal pemeriksaan'
+]);
         $request->validate([
             'tanggal' => 'required|date',
             'kelas_id' => 'required',
@@ -51,6 +57,12 @@ class JadwalPemeriksaanController extends Controller
 
     public function update(Request $request, $id)
     {
+        $jadwal = JadwalPemeriksaan::findOrFail($id);   
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Mengubah',
+    'keterangan' => 'Mengubah jadwal pemeriksaan tanggal: ' . $jadwal->tanggal
+]);
         $request->validate([
             'tanggal' => 'required|date',
             'kelas_id' => 'required',
@@ -70,6 +82,12 @@ class JadwalPemeriksaanController extends Controller
 
     public function destroy($id)
     {
+        $jadwal = JadwalPemeriksaan::findOrFail($id);
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menghapus',
+    'keterangan' => 'Menghapus jadwal pemeriksaan tanggal: ' . $jadwal->tanggal
+]);
         $jadwal->delete();
         return redirect()->route('backend.jadwal_pemeriksaan.index')->with('success', 'Jadwal berhasil dihapus.');
     }

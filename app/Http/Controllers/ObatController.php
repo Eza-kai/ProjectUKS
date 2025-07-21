@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Obat;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 
 class ObatController extends Controller
@@ -20,6 +21,7 @@ class ObatController extends Controller
 
     public function store(Request $request)
     {
+        
         $request->validate([
             'nama_obat' => 'required',
             'kategori' => 'required',
@@ -38,6 +40,11 @@ class ObatController extends Controller
         $obat->deskripsi = $request->deskripsi;
 
         $obat->save();
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menambah',
+    'keterangan' => 'Menambah data obat: ' . $obat->nama_obat
+]); 
 
         return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil ditambahkan.');
     }
@@ -60,7 +67,7 @@ class ObatController extends Controller
             'nama_obat' => 'required',
             'kategori' => 'required',
             'stok' => 'required|numeric',
-            'kadaluarsa' => 'required|date',
+            'tanggal_kadaluarsa' => 'required|date',
             'unit' => 'required',
             'deskripsi' => 'nullable',
         ]);
@@ -74,12 +81,23 @@ class ObatController extends Controller
         $obat->deskripsi = $request->deskripsi;
 
         $obat->save();
+        
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Mengubah',
+    'keterangan' => 'Mengubah data obat: ' . $obat->nama_obat
+]);
 
         return redirect()->route('admin.obat.index')->with('success', 'Obat berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menghapus',
+    'keterangan' => 'Menghapus data obat: ' . $obat->nama_obat
+]);
         $obat = Obat::findOrFail($id);
         $obat->delete();
         return redirect()->route('backend.obat.index')->with('success', 'Obat berhasil dihapus.');

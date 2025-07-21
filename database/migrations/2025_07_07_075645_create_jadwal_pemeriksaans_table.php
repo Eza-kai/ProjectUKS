@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('kelas_id');
             $table->unsignedBigInteger('petugas_id');
             $table->text('keterangan');
-            $table->foreign('kelas_id')->references('id')->on('kelas');
-            $table->foreign('petugas_id')->references('id')->on('petugas');
+            $table->foreign('kelas_id')->references('id')->on('kelas')->onDelete('cascade');
+            $table->foreign('petugas_id')->references('id')->on('petugas')->onDelete('cascade');
             $table->timestamps();
         });
     }

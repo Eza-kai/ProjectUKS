@@ -26,8 +26,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="kelas" class="form-label">Kelas</label>
-                            <select name="kelas" class="form-control @error('kelas') is-invalid @enderror">
+                            <label for="kelas_id" class="form-label">Kelas</label>
+                            <select name="kelas_id" class="form-control @error('kelas_id') is-invalid @enderror">
                                 <option value="">-- Pilih Kelas --</option>
                                 @foreach($kelas as $k)
                                     <option value="{{ $k->id }}" {{ old('kelas') == $k->id ? 'selected' : '' }}>
@@ -53,8 +53,7 @@
                         </div>
 
                         <div class="mb-3 text-end">
-                            <button type="submit" class="btn btn-success">Simpan</button>
-                            <a href="{{ route('admin.siswa.index') }}" class="btn btn-secondary">Kembali</a>
+                            <button type="submit" class="btn btn-success">Simpan</button>                            
                         </div>
 
                     </form>

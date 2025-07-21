@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 
 class KelasController extends Controller
@@ -29,6 +30,11 @@ class KelasController extends Controller
      */
     public function store(Request $request)
     {
+     LogAktivitas::create([
+    'user_id' => auth()->id(), // fallback ID admin
+    'aksi' => 'Menambahkan',
+    'keterangan' => 'Data Kelas ditambahkan oleh admin'
+]);
         $request->validate([
             'nama_kelas' => 'required|unique:kelas',
         ]);
@@ -45,6 +51,7 @@ class KelasController extends Controller
      */
     public function edit($id)
     {
+        $kelas = Kelas::findOrFail($id);
         return view('backend.kelas.edit', compact('kelas'));
     }
 
@@ -53,6 +60,12 @@ class KelasController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $kelas = Kelas::findOrFail($id);
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Mengubah',
+    'keterangan' => 'Mengubah data kelas: ' . $kelas->nama_kelas
+]);
         $request->validate([
             'nama_kelas' => 'required|unique:kelas,nama_kelas,' . $kelas->id,
         ]);
@@ -69,12 +82,19 @@ class KelasController extends Controller
      */
     public function destroy($id)
     {
+        $kelas = Kelas::findOrFail($id);
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menghapus',
+    'keterangan' => 'Menghapus data kelas: ' . $kelas->nama_kelas
+]);
         $kelas->delete();
-        return redirect()->route('backend.kelas.index')->with('success', 'Data kelas berhasil dihapus');
+        return redirect()->route('admin.kelas.index')->with('success', 'Data kelas berhasil dihapus');
     }
 
     public function show($id)
     {
+        $kelas = Kelas::findOrFail($id);
         return view('backend.kelas.show', compact('kelas'));
     }
 }

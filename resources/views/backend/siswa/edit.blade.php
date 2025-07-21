@@ -30,10 +30,10 @@
 
                         <div class="mb-2">
                             <label for="">Kelas</label>
-                            <select name="kelas" class="form-control @error('kelas') is-invalid @enderror">
+                            <select name="kelas_id" class="form-control @error('kelas_id') is-invalid @enderror">
                                 @foreach($kelas as $k)
-                                    <option value="{{ $k->id }}" {{ $siswa->kelas == $k->id ? 'selected' : '' }}>
-                                        {{ $k->nama_kelas }}
+                                    <option value="{{ $k->id }}" {{ $siswa->kelas_id == $k->id ? 'selected' : '' }}>
+                                    {{ $k->nama_kelas }}
                                     </option>
                                 @endforeach
                             </select>

@@ -19,7 +19,7 @@
         </div>
         <div class="mb-3">
             <label>Tanggal Kadaluwarsa</label>
-            <input type="date" name="tanggal_kadaluwarsa" value="{{ old('tanggal_kadaluwarsa', $obat->tanggal_kadaluwarsa) }}" class="form-control">
+            <input type="date" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa', $obat->tanggal_kadaluarsa) }}" class="form-control">
         </div>
         <div class="mb-3">
             <label>Unit</label>

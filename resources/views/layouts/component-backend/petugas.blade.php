@@ -4,8 +4,8 @@
         <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
         <div class="app-branding">
             <a class="app-logo" href="{{ route('admin.dashboard') }}">
-                <img class="logo-icon me-2" src="{{ asset('assets/backend/images/Sakura.png') }}" alt="Logo Aplikasi">
-                <span class="logo-text">SAKURA</span>
+                <img class="logo-icon me-2" src="{{ asset('assets/backend/images/app-logo.svg') }}" alt="Logo Aplikasi">
+                <span class="logo-text">PORTAL</span>
             </a>
         </div>
         
@@ -71,54 +71,24 @@
                             <span class="nav-link-text">Kelola Petugas</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.petugas.*') ? 'active' : '' }}" href="{{ route('admin.obat.index') }}">
-                            <span class="nav-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-prescription2" viewBox="0 0 16 16">
-  <path d="M5.5 5.5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H6v1.5a.5.5 0 0 1-1 0V8H3.5a.5.5 0 0 1 0-1H5V5.5a.5.5 0 0 1 .5-.5z"/>
-  <path d="M7 3h2a2 2 0 0 1 2 2v2.5H9.5a.5.5 0 0 0 0 1H11V10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-2.5h1.5a.5.5 0 0 0 0-1H5V5a2 2 0 0 1 2-2z"/>
-</svg>
-
-                            </span>
-                            <span class="nav-link-text">Kelola Obat</span>
-                        </a>
-                    </li>
                 @endif
 
                 <!-- Menu Khusus Petugas -->  
-                @if(auth()->user()->role = 'petugas')                                                  
-                <li class="nav-item has-submenu">
-                    <a class="nav-link {{ request()->is('admin/rekam_medis*') || request()->is('admin/laporan*') ? 'active' : '' }} collapsed" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#submenu-rekam-medis" 
-                    aria-expanded="false" 
-                    aria-controls="submenu-rekam-medis">
-                    <span class="nav-icon">
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-medical" fill="currentColor">
-                            <path d="M8.5 4.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L7 6l-.549.317a.5.5 0 1 0 .5.866l.549-.317V7.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L9 6l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V4.5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
-                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
-                        </svg>
-                    </span>
-                    <span class="nav-link-text">Rekam Medis</span>
-                    <span class="submenu-arrow">&rsaquo;</span>
-                </a>
-                <div id="submenu-rekam-medis" class="collapse {{ request()->is('admin/rekam_medis*') || request()->is('admin/laporan*') ? 'show' : '' }}">
-                    <ul class="submenu list-unstyled">
-                        <li class="submenu-item">
-                            <a class="submenu-link {{ request()->routeIs('admin.rekam_medis.index') ? 'active' : '' }}" href="{{ route('admin.rekam_medis.index') }}">
-                                Data Rekam Medis
-                            </a>
-                        </li>
-                        <li class="submenu-item">
-                            <a class="submenu-link {{ request()->routeIs('admin.rekam_medis.laporan') ? 'active' : '' }}" href="{{ route('admin.rekam_medis.laporan') }}">
-                                Laporan Rekam Medis
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+                @if(auth()->user()->role = 'petugas')                               
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.jadwal_pemeriksaan.*') ? 'active' : '' }}" href="{{ route('admin.jadwal_pemeriksaan.index') }}">
+                        <a class="nav-link {{ request()->routeIs('petugas.rekam_medis.*') ? 'active' : '' }}" href="{{ route('petugas.rekam_medis.index') }}">
+                            <span class="nav-icon">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-medical" fill="currentColor">
+                                    <path d="M8.5 4.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L7 6l-.549.317a.5.5 0 1 0 .5.866l.549-.317V7.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L9 6l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V4.5zM5.5 9a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/>
+                                </svg>
+                            </span>
+                            <span class="nav-link-text">Rekam Medis</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('petugas.jadwal_pemeriksaan.*') ? 'active' : '' }}" href="{{ route('petugas.jadwal_pemeriksaan.index') }}">
                             <span class="nav-icon">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-calendar-check" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
@@ -130,7 +100,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.riwayat_kunjungan.*') ? 'active' : '' }}" href="{{ route('admin.riwayat_kunjungan.index') }}">
+                        <a class="nav-link {{ request()->routeIs('petugas.riwayat_kunjungan.*') ? 'active' : '' }}" href="{{ route('petugas.riwayat_kunjungan.index') }}">
                             <span class="nav-icon">
                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-clock-history" fill="currentColor">
                                     <path fill-rule="evenodd" d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
@@ -143,13 +113,24 @@
                     </li>            
                     @endif
                 <!-- Menu Umum untuk Admin dan Petugas -->
-                
-				  <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.rekam_medis.log_aktivitas.*') ? 'active' : '' }}" href="{{ route('admin.log_aktivitas.index') }}">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('petugas.laporan.*') ? 'active' : '' }}" href="{{ route('petugas.rekam_medis.laporan') }}">
                         <span class="nav-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-activity" viewBox="0 0 16 16">
-                            <path d="M8 1a.5.5 0 0 1 .5.5V6h3.5a.5.5 0 0 1 0 1H8.5v4.5a.5.5 0 0 1-1 0V7H4a.5.5 0 0 1 0-1h3.5V1.5A.5.5 0 0 1 8 1z"/>
-                        </svg>
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
+                        </span>
+                        <span class="nav-link-text">Laporan</span>
+                    </a>
+                </li>
+				  <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('petugas.rekam_medis.log_aktivitas.*') ? 'active' : '' }}" href="{{ route('petugas.log_aktivitas.index') }}">
+                        <span class="nav-icon">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-earmark-text" fill="currentColor">
+                                <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                            </svg>
                         </span>
                         <span class="nav-link-text">Log Aktivitas</span>
                     </a>

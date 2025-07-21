@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Plants vs Zombies</title>
+  <style>
+    body { margin: 0; background: #b6e67d; font-family: sans-serif; }
+    canvas { display: block; margin: 0 auto; border: 4px solid #444; background: #b6e67d; }
+    #menu { text-align: center; margin-top: 10px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="900" height="500"></canvas>
+<div id="menu">
+  <button onclick="restartGame()">Main Ulang</button>
+</div>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const cellSize = 100, rows = 5, cols = 9;
+let plants = [], zombies = [], bullets = [], gameOver = false, spawnInterval;
+let peashooterImg = new Image(), zombieImg = new Image();
+let imagesLoaded = 0;
+
+// Load images
+peashooterImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAB4klEQVRoge2ZwU3DMBBFz+MzG4SgEUQJGoARSCUSiBFQARaAESkKIKAKUARSCYi8lzuzNVmVNn3s78k7Oy6Z6R+cXYyzbRr5LCWjCH1GXH+bDfgPLFEaEcItME8Rf0W+wHzh4ZGHqK+4QkBY3MFVR9iK4bbH/IIuTxkB/8khF97E3ELoR+XPK7jiPHUZPIZmOJXB8KfMGk4/kNU8AWcEepx3Kvw2zR9UjAeWcOcR3DiG/JXA1mSkv0hcH5cOfC9CtAs6LOJ1LeCXYoYinZVoMT0KcMCjkDGAPkVkRLhTWjXEVak6/FpwNvyZVR68u5jciy+RhTWe4CwS9Uw2MGkrlK8RHqBfVuNfABeEnn+j2gX4L3EFbUX3E1FEVjEC6b+R2ja1vZEd5V4DLsorliObtiL3jDaA1K1ccHcQfJULXMBslcY6rtd6SLGpT6u9quXE+/V+7zdv2auX8RcVuUXbUXvE2XE5H9X5bU3f8T5X2LfRcUUXfU+R97VFYR6B1FYb6F1F0AAAAASUVORK5CYII=";
+zombieImg.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAABvUlEQVRoge2Z0W7DMAyFW8bYBCyADqAj0ApQCUAKUAlQCVAJUAlQCXQAH8POuT4/0M+3hUTezs3r/Ofs3OP2Y+ZpnGsZfMJcF30IYQ1QXg5UP8LwwD44xNQmMUGMJ4j3EUIfEwMuIb0g5I5CeEuoQ5z3MEXMQcRTiPnUf0hzEHO3mJzK/4RfFcQTSPMAzgDuMPoVb8hOxH2MefNzErxuBdiP0kB1GB+yRCeBXwCrSc7pIcpnF3ClgiW4Q5zZ0iTT4X0kcLkLbI9GXqDvR/q/9AiHgGdQSKYG+iSwHe3UBeLZ5PaO7kWUl9Sbwq9IfnWeqGyzzCUd5RjHRC/qOrFdVtFtVtPjfd6r9i3J7n6zbrBvFfRZUX/GdS7UXsV9H+3dF/VfYxRFd9D1FdFXEPoF5BdBH0F0P4AAAAASUVORK5CYII=";
+
+peashooterImg.onload = zombieImg.onload = () => {
+  imagesLoaded++;
+  if (imagesLoaded === 2) startGame();
+};
+
+class Plant {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.shootTimer = 0;
+  }
+  update() {
+    this.shootTimer++;
+    if (this.shootTimer >= 100) {
+      bullets.push(new Bullet(this.x + 70, this.y + 40));
+      this.shootTimer = 0;
+    }
+  }
+  draw() {
+    ctx.drawImage(peashooterImg, this.x, this.y, cellSize, cellSize);
+  }
+}
+
+class Zombie {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.hp = 3; this.speed = 0.3;
+  }
+  update() {
+    this.x -= this.speed;
+    for (let plant of plants) {
+      if (this.x < plant.x + cellSize && this.x + cellSize > plant.x && this.y === plant.y) {
+        this.speed = 0; return;
+      }
+    }
+    this.speed = 0.3;
+    if (this.x <= 0) gameOver = true;
+  }
+  draw() {
+    ctx.drawImage(zombieImg, this.x, this.y, cellSize, cellSize);
+  }
+}
+
+class Bullet {
+  constructor(x, y) {
+    this.x = x; this.y = y;
+    this.radius = 6; this.speed = 3;
+  }
+  update() {
+    this.x += this.speed;
+    for (let i = 0; i < zombies.length; i++) {
+      const z = zombies[i];
+      if (this.x > z.x && this.x < z.x + cellSize && this.y > z.y && this.y < z.y + cellSize) {
+        z.hp--; if (z.hp <= 0) zombies.splice(i, 1);
+        bullets.splice(bullets.indexOf(this), 1); break;
+      }
+    }
+  }
+  draw() {
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "lime"; ctx.fill();
+  }
+}
+
+canvas.addEventListener("click", (e) => {
+  if (gameOver) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) / cellSize) * cellSize;
+  const y = Math.floor((e.clientY - rect.top) / cellSize) * cellSize;
+  const existing = plants.find(p => p.x === x && p.y === y);
+  if (!existing) plants.push(new Plant(x, y));
+});
+
+function spawnZombie() {
+  const row = Math.floor(Math.random() * rows);
+  zombies.push(new Zombie(canvas.width, row * cellSize));
+}
+
+function update() {
+  if (gameOver) {
+    ctx.fillStyle = "red";
+    ctx.font = "60px Arial";
+    ctx.fillText("GAME OVER", 270, 250);
+    clearInterval(spawnInterval);
+    return;
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "#999";
+  for (let i = 0; i <= rows; i++) {
+    ctx.beginPath(); ctx.moveTo(0, i * cellSize); ctx.lineTo(canvas.width, i * cellSize); ctx.stroke();
+  }
+  for (let i = 0; i <= cols; i++) {
+    ctx.beginPath(); ctx.moveTo(i * cellSize, 0); ctx.lineTo(i * cellSize, canvas.height); ctx.stroke();
+  }
+
+  plants.forEach(p => { p.update(); p.draw(); });
+  zombies.forEach(z => { z.update(); z.draw(); });
+  bullets.forEach(b => { b.update(); b.draw(); });
+  bullets = bullets.filter(b => b.x < canvas.width);
+
+  requestAnimationFrame(update);
+}
+
+function startGame() {
+  plants = []; zombies = []; bullets = []; gameOver = false;
+  spawnInterval = setInterval(spawnZombie, 2500);
+  update();
+}
+function restartGame() {
+  clearInterval(spawnInterval);
+  startGame();
+}
+</script>
+</body>
+</html>

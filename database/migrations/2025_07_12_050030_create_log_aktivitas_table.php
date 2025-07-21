@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('petugas', function (Blueprint $table) {
+        Schema::create('log_aktivitas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->unsignedBigInteger('user_id');
-            $table->integer('no_hp');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('aksi');
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
-    }
+    }   
 
     /**
      * Reverse the migrations.
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('petugas');
+        Schema::dropIfExists('log_aktivitas');
     }
 };

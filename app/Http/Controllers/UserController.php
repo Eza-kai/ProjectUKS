@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+     public function show()
+    {
+        $users = User::all();
+        return view('backend.user.tampil', compact('users'));
+    }
     public function index()
     {
         $users = User::all();

@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\RekamMedis;
 use App\Models\RiwayatKunjungan;
 use App\Models\Obat;
+use App\Models\LogAktivitas;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class SiswaController extends Controller
@@ -25,43 +26,55 @@ class SiswaController extends Controller
 
     return $pdf->download('laporan_gabungan.pdf');
 }
-public function exportPdf()
-{
+    public function exportPdf()
+    {
     $siswa = Siswa::with('user')->get();
 
     $pdf = Pdf::loadView('backend.siswa.pdf', compact('siswa'))
         ->setPaper('A4', 'portrait');
 
     return $pdf->download('data_siswa.pdf');    
-}
+    }
 
+    public function tampil()
+    {
+        $siswa = Siswa::with('user', 'kelas')->get();
+        return view('backend.siswa.tampil', compact('siswa'));
+    }
 
     public function index()
     {
-        $siswa = Siswa::with(['user'])->get();
+        $siswa = Siswa::with('user', 'kelas')->get();
         return view('backend.siswa.index', compact('siswa'));
     }
 
     public function create()
     {
         $user = User::all();
-        $kelas = Kelas::all();
+        $kelas = Kelas::all();        
         return view('backend.siswa.create', compact('user', 'kelas'));
     }
 
     public function store(Request $request)
-    {
+    {       
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'kelas' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
         ]);
 
         $siswa = new Siswa();
         $siswa->user_id = $request->user_id;
-        $siswa->kelas = $request->kelas;
+        $siswa->kelas_id = $request->kelas_id;
         $siswa->jenis_kelamin = $request->jenis_kelamin;
         $siswa->save();
+
+        LogAktivitas::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Menambah',
+        'keterangan' => 'Menambah data siswa: ' . $siswa->user->name
+        ]);
+        
         return redirect()->route('admin.siswa.index')->with('success', 'Siswa berhasil ditambahkan');
     }
 
@@ -81,24 +94,47 @@ public function exportPdf()
 
     public function update(Request $request, $id)
     {        
+        $siswa = Siswa::findOrFail($id);       
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'kelas' => 'required|exists:kelas,id',
+            'kelas_id' => 'required|exists:kelas,id',
             'jenis_kelamin' => 'required|string|max:15',
         ]);
         $siswa = Siswa::findOrFail($id);
         $siswa->user_id = $request->user_id;
-        $siswa->kelas = $request->kelas;
+        $siswa->kelas_id = $request->kelas_id;
         $siswa->jenis_kelamin = $request->jenis_kelamin;
         $siswa->save();
 
+         LogAktivitas::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Mengubah',
+        'keterangan' => 'Mengubah data siswa: ' . $siswa->user->name
+        ]);
         return redirect()->route('admin.siswa.index')->with('success', 'Siswa berhasil diperbarui');
     }
 
     public function destroy($id)
-    {
+    {        
         $siswa = Siswa::findOrFail($id);
         $siswa->delete();
+        LogAktivitas::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Menghapus',
+        'keterangan' => 'Menghapus data siswa: ' . $siswa->user->name
+        ]);
+
         return redirect()->route('admin.siswa.index')->with('success', 'Siswa berhasil dihapus');
     }
+    public function getSiswaByKelas($kelas_id)
+{
+    $siswa = Siswa::where('kelas_id', $kelas_id)->with('user:id,name')->get()->map(function ($s) {
+    return [
+        'id' => $s->id,
+        'nama' => $s->user->name,
+        ];
+    });
+    return response()->json($siswa);
+}
+
 }

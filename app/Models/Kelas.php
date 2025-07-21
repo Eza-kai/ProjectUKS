@@ -14,4 +14,8 @@ class Kelas extends Model
     {
         return $this->hasMany(JadwalPemeriksaan::class);
     }
+    public function siswa()
+    {
+        return $this->hasMany(Siswa::class);
+    }
 }

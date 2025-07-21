@@ -1,7 +1,7 @@
 @extends('layouts.backend')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid fx-4">
     <h4 class="mb-4">Data User</h4>
 
     @if (session('success'))
@@ -9,7 +9,6 @@
     @endif
 
     <a href="{{ route('admin.user.create') }}" class="btn btn-primary mb-3">+ Tambah User</a>
-
     <div class="card">
         <div class="card-body">
             <div class="table-responsive">

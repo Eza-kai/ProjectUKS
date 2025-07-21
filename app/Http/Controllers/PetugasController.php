@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Petugas;
 use App\Models\User;
+use App\Models\LogAktivitas;
 use Illuminate\Http\Request;
 
 class PetugasController extends Controller
@@ -31,6 +32,7 @@ class PetugasController extends Controller
      */
     public function store(Request $request)
     {
+       
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
@@ -42,6 +44,12 @@ class PetugasController extends Controller
             'user_id' => $request->user_id,
             'no_hp' => $request->no_hp,
         ]);
+
+         LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menambah',
+    'keterangan' => 'Menambah data petugas'
+]);
 
         return redirect()->route('admin.petugas.index')->with('success', 'Data petugas berhasil ditambahkan.');
     }
@@ -70,6 +78,7 @@ class PetugasController extends Controller
      */
     public function update(Request $request, $id)
     {    
+        
         $request->validate([
             'nama' => 'required|string|max:255',
             'user_id' => 'required|exists:users,id',
@@ -81,6 +90,11 @@ class PetugasController extends Controller
         $petugas->user_id = $request->user_id;
         $petugas->no_hp = $request->no_hp;
         $petugas->save();
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Mengubah',
+    'keterangan' => 'Mengubah data petugas: ' . $petugas->nama
+]);
 
         return redirect()->route('admin.petugas.index')->with('success', 'Data petugas berhasil diperbarui.');
     }
@@ -90,6 +104,11 @@ class PetugasController extends Controller
      */
     public function destroy($id)
     {
+        LogAktivitas::create([
+    'user_id' => auth()->id(),
+    'aksi' => 'Menghapus',
+    'keterangan' => 'Menghapus data petugas: ' . $petugas->nama
+]);
         $petugas = Petugas::findOrFail($id);
         $petugas->delete();
 

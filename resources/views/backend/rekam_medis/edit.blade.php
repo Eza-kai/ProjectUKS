@@ -8,7 +8,7 @@
 
         <div class="mb-3">
             <label>Siswa</label>
-            <input type="text" name="siswa_id" class="form-control" value="{{ $rekam->siswa_id }}">
+            <input type="text" name="siswa_id" class="form-control" value="{{ $rekam->siswa->user->name }}">
         </div>
 
         <div class="mb-3">
